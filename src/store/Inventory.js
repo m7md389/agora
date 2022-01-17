@@ -1,10 +1,9 @@
 import { observable, makeObservable, action } from 'mobx'
+import Item from "./Item"
 
 class Inventory {
     constructor() {
         this.items = [];
-        this.price = 0;
-        this.quantity = 0;
 
         makeObservable(this, {
             items: observable,
@@ -19,13 +18,18 @@ class Inventory {
         if (!name) {
             return "please send item name"
         }
+
+        let priceInNumbers = Number(price)
+        let quantityInNumbers = Number(quantity)
+        if (quantityInNumbers < 1) quantityInNumbers = 1
+
         for (let item of this.items) {
             if (item.name === name) {
-                item.quantity++;
+                item.quantity += quantityInNumbers;
                 return "item added";
             }
         }
-        this.items.push({ name, price, quantity })
+        this.items.push(new Item(name, priceInNumbers, quantityInNumbers))
         return "item added";
     }
 
@@ -36,10 +40,10 @@ class Inventory {
     buyItem = function (name) {
         for (let index in this.items) {
             if (this.items[index].name === name) {
-                if (this.items[index].quantity === 0) {
-                    this.items[index].quantity--;
+                if (this.items[index].quantity === 1) {
+                    this.deleteItem(index)
                 } else {
-                    deleteItem(index)
+                    this.items[index].quantity--;
                 }
                 return "item bought";
             }
@@ -56,9 +60,6 @@ class Inventory {
         }
         return "item not found";
     }
-
 }
 
-const inventory = new Inventory();
-
-export default inventory;
+export default new Inventory();

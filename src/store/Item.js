@@ -1,17 +1,15 @@
 import { observable, makeObservable } from 'mobx'
 
-class Item {
-    constructor() {
-        this.name = "";
-        this.price = 0;
-        this.quantity = 0;
+export default class Item {
+    constructor(name = "", price = 0, quantity = 0) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
 
-        makeIterable(this, {
+        makeObservable(this, {
             name: observable,
             price: observable,
             quantity: observable
         })
     }
 }
-
-export default Item;
